@@ -1,15 +1,10 @@
-FROM debian:jessie
+FROM gliderlabs/alpine:3.3
 MAINTAINER Arnold Bechtoldt <mail@arnoldbechtoldt.com>
 
-RUN export DEBIAN_FRONTEND=noninteractive; \
-    apt-get update -qq && \
-    apt-get upgrade -yV -o DPkg::Options::=--force-confold && \
-    apt-get install -yV -o DPkg::Options::=--force-confold \
-        wget && \
-    wget --progress=dot:giga -O /etcdtool https://github.com/mickep76/etcdtool/releases/download/3.2/etcdtool-3.2-201602171504.linux.x86_64 && \
-    chmod +x /etcdtool && \
-    apt-get remove -yV wget && \
-    apt-get autoremove -yV && \
-    apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apk add --no-cache wget \
+  wget --progress=dot:giga -O /etcdtool https://github.com/mickep76/etcdtool/releases/download/3.2/etcdtool-3.2-201602171504.linux.x86_64 && \
+  chmod +x /etcdtool && \
+  apk del wget && \
+  apk cache clean
 
-ENTRYPOINT /etcdtool
+ENTRYPOINT ["/etcdtool"]
