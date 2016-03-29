@@ -1,11 +1,15 @@
-FROM gliderlabs/alpine:3.3
+FROM debian:jessie
 MAINTAINER Arnold Bechtoldt <mail@arnoldbechtoldt.com>
 
-#TODO GET RID OF --no-check-certificate !
+RUN export DEBIAN_FRONTEND=noninteractive; \
+    apt-get update -qq && \
+    apt-get upgrade -yV -o DPkg::Options::=--force-confold && \
+    apt-get install -yV -o DPkg::Options::=--force-confold \
+        wget && \
+    wget --progress=dot:giga -O /etcdtool https://github.com/mickep76/etcdtool/releases/download/3.2/etcdtool-3.2-201602171504.linux.x86_64 && \
+    chmod +x /etcdtool && \
+    apt-get remove -yV wget && \
+    apt-get autoremove -yV && \
+    apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN apk add --no-cache wget && \
-  wget --no-check-certificate --progress=dot:giga -O /etcdtool https://github.com/mickep76/etcdtool/releases/download/3.2/etcdtool-3.2-201602171504.linux.x86_64 && \
-  chmod +x /etcdtool && \
-  apk del wget
-
-ENTRYPOINT ["/etcdtool"]
+ENTRYPOINT /etcdtool
