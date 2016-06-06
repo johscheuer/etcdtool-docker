@@ -11,5 +11,3 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
   apt-get remove -yV wget && \
   apt-get autoremove -yV && \
   apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-ENTRYPOINT /bin/bash
